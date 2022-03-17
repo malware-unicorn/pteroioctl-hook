@@ -58,3 +58,33 @@ Adding cert command
 certmgr.exe /add CheatDriver.cer /s /r localMachine root
 ```
 
+## Customizing Hooks
+Uses a generic hook structure to instrument a jmp
+```
+typedef struct _CD_HOOK_OFFSET_STRUCT {
+    DWORD64 EntryAddr; // start of func
+    DWORD64 ReturnAddr; // return address
+    DWORD64 JumpAddr;
+    CdHookStatus HookStatus; // if established
+    BOOLEAN IsCustomHook;
+    UCHAR CustomHookBuffer[256]; // Assembly data to write
+    DWORD32 CustomHookLen;
+    DWORD32 CustomHookAddrOffset; // Offset of custom hookbuffer
+} CD_HOOK_OFFSET_STRUCT, * PCD_HOOK_OFFSET_STRUCT;
+```
+
+Example Usage:
+```
+CD_HOOK_STRUCT newHook = { };
+UCHAR JUMP_RAX[] = "\x48\xB8\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xE0";
+
+// This is a test, address are dummy addresses
+newHook.Hook.EntryAddr = 0x1234; // This should be physical address not an offset
+newHook.Hook.JumpAddr = 0x4567; // This should be physical address not an offset
+newHook.Hook.ReturnAddr = 0x9123; // This should be physical address not an offset
+newHook.Hook.IsCustomHook = TRUE;
+memcpy(newHook.Hook.CustomHookBuffer, JUMP_RAX, sizeof(JUMP_RAX));
+newHook.Hook.CustomHookLen = sizeof(JUMP_RAX);
+newHook.Hook.CustomHookAddrOffset = 2;
+```
+
