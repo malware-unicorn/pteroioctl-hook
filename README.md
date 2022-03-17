@@ -44,6 +44,17 @@ CheatController.exe -load
 1) Search for existing modules
 2) Select module by ID
 3) List Hooks
-4) Add a new hook to the selected module
+4) Add a new hook to the selected module (TODO: Implment control for hook)
 5) TODO: read memory
 6) TODO: write memory
+
+## Testing
+Tested on Windows 10 build 17763.rs5 with TestSigning On
+```
+bcdedit /set testsigning on
+```
+Adding cert command
+```
+certmgr.exe /add CheatDriver.cer /s /r localMachine root
+```
+
